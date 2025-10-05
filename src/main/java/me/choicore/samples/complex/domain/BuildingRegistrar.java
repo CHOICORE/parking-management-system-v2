@@ -3,9 +3,9 @@ package me.choicore.samples.complex.domain;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.choicore.samples.complex.domain.event.BuildingRegisteredEvent;
 import me.choicore.samples.complex.domain.model.Building;
 import me.choicore.samples.complex.domain.model.BuildingReference;
-import me.choicore.samples.complex.domain.event.BuildingRegisteredEvent;
 import me.choicore.samples.context.EventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +18,8 @@ public class BuildingRegistrar {
 
     @Transactional
     public BuildingReference register(Building building) {
+        validate(building);
+
         Building saved = buildingRepository.save(building);
 
         eventPublisher.publish(BuildingRegisteredEvent.of(saved));
@@ -27,5 +29,13 @@ public class BuildingRegistrar {
         log.info("Building registered: id={}, name={}", buildingReference.id(), buildingReference.name());
 
         return buildingReference;
+    }
+
+    private void validate(Building building) {
+        buildingRepository.findByNameAndComplexId(building.getName(), building.getComplexId())
+                .map(b -> b.isActive() ? b : null)
+                .ifPresent(b -> {
+                    throw new IllegalStateException("Building already exists: name=" + b.getName() + ", complexId=" + b.getComplexId());
+                });
     }
 }

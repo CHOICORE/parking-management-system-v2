@@ -1,13 +1,14 @@
 package me.choicore.samples.complex.domain;
 
+import me.choicore.samples.complex.domain.event.UnitRegisteredEvent;
 import me.choicore.samples.complex.domain.model.Unit;
 import me.choicore.samples.complex.domain.model.UnitReference;
-import me.choicore.samples.complex.domain.event.UnitRegisteredEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @RecordApplicationEvents
+@Transactional
 class UnitRegistrarTests {
     @Autowired
     private UnitRegistrar unitRegistrar;
