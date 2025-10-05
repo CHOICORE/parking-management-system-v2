@@ -1,0 +1,13 @@
+services:
+  mysql:
+    image: 'mysql:lts'
+    environment:
+      - 'MYSQL_DATABASE=playground'
+      - 'MYSQL_PASSWORD=secret'
+      - 'MYSQL_ROOT_PASSWORD=verysecret'
+      - 'MYSQL_USER=playground'
+      - 'TZ=Asia/Seoul'
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pverysecret" ]
+    ports:
+      - '3306:3306'
